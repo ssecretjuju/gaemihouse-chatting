@@ -13,6 +13,12 @@ exports.insertChattingLog = (nickname, message) => {
       time: new Date().toLocaleString().toString(),
     };
 
+    dbo.collection("logs").insertOne(chattingLog, (err, res) => {
+      if (err) throw err;
+      console.log("document inserted successfully");
+      db.close();
+    });
+
     dbo
       .collection("logs")
       .find({})
