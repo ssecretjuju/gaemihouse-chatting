@@ -33,6 +33,7 @@ wss.on("connection", (ws, req) => {
     const nickname = logInfo[0];
     const message = logInfo[1];
     wss.broadcast(`${nickname}: ${message}`);
+    insertChattingLog(nickname, message);
   });
 
   ws.on("close", () => {
