@@ -1,6 +1,6 @@
 // Database 및 Collection 생성 파일
 const MongoClient = require("mongodb").MongoClient;
-const url = "mongodb://localhost:27017/chatting";
+const url = `mongodb://localhost:27017`;
 
 // MongoDB에 chatting Database 생성
 MongoClient.connect(url, (err, db) => {
