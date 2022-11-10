@@ -1,7 +1,6 @@
 // MongoDB Command
 const MongoClient = require("mongodb").MongoClient;
 const url = `mongodb://localhost:27017`;
-// const url = `mongodb+srv://secretjuju:secretjuju@mongo.mnphzta.mongodb.net/?retryWrites=true&w=majority`;
 
 exports.insertChattingLog = (nickname, message) => {
   MongoClient.connect(url, (err, db) => {
