@@ -6,9 +6,8 @@
   },
   "Ports": [
     {
-      "ContainerPort": 8000,
-      "HostPort": 8000,
-      "WebSocketPort": 8001
+      "ContainerPort": 8001,
+      "HostPort": 8001
     }
   ]
 }
