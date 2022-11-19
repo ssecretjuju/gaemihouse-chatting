@@ -1,8 +1,8 @@
-const { MONGO_DB_URI } = require("../../env");
+const dotenv = require("dotenv/config");
 
 // MongoDB Command
 const MongoClient = require("mongodb").MongoClient;
-const url = MONGO_DB_URI;
+const url = process.env.CHATTING_DATABASE_ADDRESS;
 
 exports.insertChattingLog = (nickname, message) => {
   MongoClient.connect(url, (err, db) => {
