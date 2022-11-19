@@ -1,19 +1,21 @@
+const { MONGO_DB_URI } = require("../../env");
+
 // MongoDB Command
 const MongoClient = require("mongodb").MongoClient;
-const url = `mongodb://localhost:27017`;
+const url = MONGO_DB_URI;
 
 exports.insertChattingLog = (nickname, message) => {
   MongoClient.connect(url, (err, db) => {
     if (err) throw err;
     const dbo = db.db("chatting");
-    const roomId = 1;
+    const roomTitle = "방제목";
     const currentTime = new Date();
     const utc =
       currentTime.getTime() + currentTime.getTimezoneOffset() * 60 * 1000;
     const utcKr = new Date(utc + 9 * 60 * 60 * 1000);
 
     const chattingLog = {
-      room: roomId,
+      room: roomTitle,
       nickname: nickname,
       message: message,
       time: utcKr.toLocaleString().toString(),
