@@ -3,10 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Websocket Chatting</title>
+    <title>Secretjuju Chatting</title>
 
     <script>
-      const ws = new WebSocket("ws://13.125.223.22:8001");
+
+      const ws = new WebSocket(`ws://13.125.223.22:8001`);
+
 
       function clearMessage() {
         document.getElementById("message").value = "";
@@ -33,10 +35,16 @@
       }
 
       ws.onmessage = receiveMessage;
+
+      const onKeyUpHandler = () => {
+        if (window.event.keyCode == 13) {
+          sendMessage();
+        }
+      };
     </script>
   </head>
   <body>
-    <h1>Network Chat</h1>
+    <h1>Secretjuju Chat</h1>
     <div>
       <input
         type="text"
@@ -49,6 +57,7 @@
         id="message"
         placeholder="메세지"
         style="width: 200px"
+        onkeyup="onKeyUpHandler()"
       />
       <button onClick="sendMessage()">전송</button>
     </div>

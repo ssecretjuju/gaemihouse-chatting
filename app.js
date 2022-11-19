@@ -1,5 +1,6 @@
 // http 서버 설정
 const express = require("express");
+const axios = require("axios");
 const app = express();
 
 app.use(express.static("public"));
@@ -28,12 +29,23 @@ wss.on("connection", (ws, req) => {
   console.log(`접속`);
 
   // 클라이언트(ws) 데이터 수신 이벤트
-  ws.on("message", (log) => {
+  ws.on("message", async (log) => {
     const logInfo = log.toString().split("%");
     const nickname = logInfo[0];
     const message = logInfo[1];
-    wss.broadcast(`${nickname}: ${message}`);
+
     insertChattingLog(nickname, message);
+
+    // 주소만 변경하면 됨
+    // await axios({
+    //   method: "get",
+    //   url: `https://8963-119-194-163-123.jp.ngrok.io/cursewordsfilter/${message}`,
+    // }).then((res) => {
+    // console.log("값: ", res.data.Filter);
+    // res.data.Filter == 1 ?
+    // wss.broadcast(`${nickname} : 채팅 클린 AI에 의해 가려진 채팅입니다.`) :
+    wss.broadcast(`${nickname} : ${message}`);
+    // });
   });
 
   ws.on("close", () => {
