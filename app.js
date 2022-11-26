@@ -14,6 +14,50 @@ const WebSocket = require("ws");
 const { insertChattingLog } = require("./src/config/db-command");
 const wss = new WebSocket.Server({ port: 8001 });
 
+// // AI 추론 모델 설정
+// const ort = require("onnxruntime-node");
+// // const Int64 = require("node-int64");
+
+// async function chattingFilter() {
+//   try {
+//     const session = await ort.InferenceSession.create(
+//       "./model/abuse_filtering_model.onnx"
+//     );
+
+//     // 입력 값 및 크기(batch, sequence) 수정(입력 값이 채팅이 되도록)
+//     const data_input_ids = BigInt64Array.from(["1", "0", "-1", "1"]);
+//     const data_attention_mask = BigInt64Array.from(["1", "1", "-3", "-5"]);
+//     const data_token_type_ids = BigInt64Array.from(["1", "-1", "0", "-2"]); // -2~1 사이의 값만 올 수 있음. Gather98
+
+//     const tensor_input_ids = new ort.Tensor("int64", data_input_ids, [1, 4]);
+//     const tensor_attention_mask = new ort.Tensor(
+//       "int64",
+//       data_attention_mask,
+//       [1, 4]
+//     );
+//     const tensor_token_type_ids = new ort.Tensor(
+//       "int64",
+//       data_token_type_ids,
+//       [1, 4]
+//     );
+
+//     const feeds = {
+//       input_ids: tensor_input_ids,
+//       attention_mask: tensor_attention_mask,
+//       token_type_ids: tensor_token_type_ids,
+//     };
+
+//     const results = await session.run(feeds);
+
+//     const data = results.output_0.data;
+//     console.log(`filter result : ${data[0]}`);
+
+//     return data[0];
+//   } catch (e) {
+//     console.error(`failed to inference ONNX model: ${e}.`);
+//   }
+// }
+
 // broadcast : 클라이언트에게 송신
 wss.broadcast = (message) => {
   wss.clients.forEach((client) => {
@@ -36,16 +80,16 @@ wss.on("connection", (ws, req) => {
 
     insertChattingLog(nickname, message);
 
-    // 주소만 변경하면 됨
-    // await axios({
-    //   method: "get",
-    //   url: `https://8963-119-194-163-123.jp.ngrok.io/cursewordsfilter/${message}`,
-    // }).then((res) => {
-    // console.log("값: ", res.data.Filter);
-    // res.data.Filter == 1 ?
-    // wss.broadcast(`${nickname} : 채팅 클린 AI에 의해 가려진 채팅입니다.`) :
-    wss.broadcast(`${nickname} : ${message}`);
-    // });
+    await axios({
+      method: "get",
+      url: `http://54.180.149.211:8000/cursewordsfilter/${message}`,
+    }).then((res) => {
+      console.log("값: ", res.data.Filter);
+
+      res.data.Filter == 1
+        ? wss.broadcast(`${nickname} : 채팅 클린 AI에 의해 가려진 채팅입니다.`)
+        : wss.broadcast(`${nickname} : ${message}`);
+    });
   });
 
   ws.on("close", () => {
