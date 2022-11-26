@@ -83,13 +83,19 @@ wss.on("connection", (ws, req) => {
     await axios({
       method: "get",
       url: `http://54.180.149.211:8000/cursewordsfilter/${message}`,
-    }).then((res) => {
-      console.log("값: ", res.data.Filter);
+    })
+      .then((res) => {
+        console.log("값: ", res.data.Filter);
 
-      res.data.Filter == 1
-        ? wss.broadcast(`${nickname} : 채팅 클린 AI에 의해 가려진 채팅입니다.`)
-        : wss.broadcast(`${nickname} : ${message}`);
-    });
+        res.data.Filter == 1
+          ? wss.broadcast(
+              `${nickname} : 채팅 클린 AI에 의해 가려진 채팅입니다.`
+            )
+          : wss.broadcast(`${nickname} : ${message}`);
+      })
+      .catch(() => {
+        wss.broadcast(`${nickname} : ${message}`);
+      });
   });
 
   ws.on("close", () => {
