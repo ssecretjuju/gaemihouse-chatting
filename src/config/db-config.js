@@ -1,8 +1,10 @@
-const dotenv = require("dotenv/config");
+// const dotenv = require("dotenv/config");
+
+const { MONGO_DB_URI } = require("../../env");
 
 // Database 및 Collection 생성 파일
 const MongoClient = require("mongodb").MongoClient;
-const url = process.env.CHATTING_DATABASE_ADDRESS;
+const url = MONGO_DB_URI;
 
 // MongoDB에 chatting Database 생성
 MongoClient.connect(url, (err, db) => {

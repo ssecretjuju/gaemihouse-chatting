@@ -1,8 +1,10 @@
-const dotenv = require("dotenv/config");
+// const dotenv = require("dotenv/config");
+
+const { MONGO_DB_URI } = require("../../env");
 
 // MongoDB Command
 const MongoClient = require("mongodb").MongoClient;
-const url = process.env.CHATTING_DATABASE_ADDRESS;
+const url = MONGO_DB_URI;
 
 exports.insertChattingLog = (nickname, message) => {
   MongoClient.connect(url, (err, db) => {
@@ -23,7 +25,7 @@ exports.insertChattingLog = (nickname, message) => {
 
     dbo.collection("logs").insertOne(chattingLog, (err, res) => {
       if (err) throw err;
-      console.log("document inserted successfully");
+      // console.log("document inserted successfully");
       // db.close();
     });
 
@@ -33,7 +35,7 @@ exports.insertChattingLog = (nickname, message) => {
       .sort({ time: 1 })
       .toArray((err, res) => {
         if (err) throw err;
-        console.log(res);
+        // console.log(res);
         // db.close();
       });
   });

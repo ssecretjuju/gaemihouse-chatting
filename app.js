@@ -78,8 +78,6 @@ wss.on("connection", (ws, req) => {
     const nickname = logInfo[0];
     const message = logInfo[1];
 
-    insertChattingLog(nickname, message);
-
     await axios({
       method: "get",
       url: `http://54.180.149.211:8000/cursewordsfilter/${message}`,
@@ -87,11 +85,12 @@ wss.on("connection", (ws, req) => {
       .then((res) => {
         console.log("값: ", res.data.Filter);
 
-        res.data.Filter == 1
-          ? wss.broadcast(
-              `${nickname} : 채팅 클린 AI에 의해 가려진 채팅입니다.`
-            )
-          : wss.broadcast(`${nickname} : ${message}`);
+        if (res.data.Filter == 1) {
+          wss.broadcast(`${nickname} : 채팅 클린 AI에 의해 가려진 채팅입니다.`);
+        } else {
+          wss.broadcast(`${nickname} : ${message}`);
+          insertChattingLog(nickname, message);
+        }
       })
       .catch(() => {
         wss.broadcast(`${nickname} : ${message}`);
